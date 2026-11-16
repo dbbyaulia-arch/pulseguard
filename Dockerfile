@@ -4,8 +4,8 @@ WORKDIR /app
 COPY . .
 RUN npm ci && npm run build
 
-# Tahap 2: Runtime PHP 8.3 & Laravel
-FROM php:8.3-cli-alpine
+# Tahap 2: Runtime PHP 8.4 & Laravel
+FROM php:8.4-cli-alpine
 
 # Pasang ekstensi PHP yang dibutuhkan Laravel, cURL, dan SQLite
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
