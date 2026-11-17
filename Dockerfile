@@ -26,5 +26,5 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
 # Atur izin tulis folder storage & cache
 RUN chmod -R 775 storage bootstrap/cache
 
-# Siapkan SQLite, jalankan package:discover & migrasi saat container menyala
-CMD sh -c 'mkdir -p "$(dirname "${DB_DATABASE:-database/database.sqlite}")" && touch "${DB_DATABASE:-database/database.sqlite}" && php artisan package:discover --ansi && php artisan optimize:clear && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}'
+# Siapkan SQLite, jalankan migrasi DULU sebelum clear config, lalu nyalakan server PHP
+CMD sh -c 'mkdir -p "$(dirname "${DB_DATABASE:-database/database.sqlite}")" && touch "${DB_DATABASE:-database/database.sqlite}" && php artisan package:discover --ansi && php artisan migrate --force && php artisan config:clear && php -S 0.0.0.0:${PORT:-8080} -t public vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php'
