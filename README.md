@@ -8,15 +8,15 @@
 
 ### 1. Halaman Status Publik (`/`)
 Halaman *read-only* tanpa login yang menampilkan status layanan secara *real-time* beserta visualisasi 60 riwayat ping terakhir.
-![Halaman Status Publik](docs/screenshots/public-status.png)
+![Halaman Status Publik](docs/screenshots/dashboard_public_page.png)
 
 ### 2. Dasbor Kendali Admin (`/admin`)
 Panel manajemen terproteksi passcode dengan status *Task Scheduler* 1 menit, telemetry kapasitas SQLite, filter status, dan aksi ping manual.
-![Dasbor Admin](docs/screenshots/admin-dashboard.png)
+![Dasbor Admin](docs/screenshots/dashboard_admin_page.png)
 
 ### 3. Riwayat Log & Diagnostik Error
 Inspeksi detail setiap pengecekan hingga 100 riwayat terakhir, lengkap dengan kode status HTTP, latensi milidetik (`ms`), dan pesan error jaringan.
-![Riwayat Log Ping](docs/screenshots/ping-logs.png)
+![Riwayat Log Ping](docs/screenshots/input_passcode_page.png)
 
 ---
 
