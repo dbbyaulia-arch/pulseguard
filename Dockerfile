@@ -2,7 +2,7 @@
 FROM node:20-alpine AS frontend
 WORKDIR /app
 COPY . .
-RUN npm ci && npm run build
+RUN npm install && npm run build
 
 # Tahap 2: Runtime PHP 8.4 & Laravel
 FROM php:8.4-cli-alpine
@@ -20,11 +20,11 @@ WORKDIR /var/www/html
 COPY . .
 COPY --from=frontend /app/public/build ./public/build
 
-# Install dependensi PHP produksi
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Install dependensi PHP tanpa menjalankan script artisan sebelum env siap
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
 # Atur izin tulis folder storage & cache
 RUN chmod -R 775 storage bootstrap/cache
 
-# Inisialisasi file SQLite otomatis, jalankan migrasi, dan nyalakan server
-CMD sh -c 'mkdir -p "$(dirname "${DB_DATABASE:-database/database.sqlite}")" && touch "${DB_DATABASE:-database/database.sqlite}" && php artisan optimize:clear && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}'
+# Siapkan SQLite, jalankan package:discover & migrasi saat container menyala
+CMD sh -c 'mkdir -p "$(dirname "${DB_DATABASE:-database/database.sqlite}")" && touch "${DB_DATABASE:-database/database.sqlite}" && php artisan package:discover --ansi && php artisan optimize:clear && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}'
