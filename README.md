@@ -1,60 +1,60 @@
 # PulseGuard — Self-Hosted HTTP & Uptime Monitor
 
-**PulseGuard** adalah aplikasi pemantau ketersediaan (*uptime*) dan performa latensi layanan web maupun REST API berbasis **Laravel**, **Vue 3**, dan **SQLite**. Dirancang sebagai alternatif *self-hosted* dari layanan SaaS berbayar (seperti UptimeRobot atau Pingdom) untuk memantau aset digital setiap 1 menit tanpa biaya langganan bulanan.
+**PulseGuard** is a self-hosted HTTP/HTTPS availability (*uptime*) and latency monitoring application for web services and REST APIs, built with **Laravel**, **Vue 3**, and **SQLite**. Designed as a lightweight, self-hosted alternative to paid SaaS monitoring tools (such as UptimeRobot or Pingdom) to check digital assets every 1 minute with zero recurring subscription costs.
 
 ---
 
-## Pratinjau Aplikasi
+## Application Preview
 
-### 1. Halaman Status Publik (`/`)
-Halaman *read-only* tanpa login yang menampilkan status layanan secara *real-time* beserta visualisasi 60 riwayat ping terakhir.
-![Halaman Status Publik](docs/screenshots/dashboard_public_page.png)
+### 1. Public Status Page (`/`)
+A read-only, login-free status page displaying real-time service health alongside a 60-ping heartbeat visualization.
+![Public Status Page](docs/screenshots/dashboard_public_page.png)
 
-### 2. Dasbor Kendali Admin (`/admin`)
-Panel manajemen terproteksi passcode dengan status *Task Scheduler* 1 menit, telemetry kapasitas SQLite, filter status, dan aksi ping manual.
-![Dasbor Admin](docs/screenshots/dashboard_admin_page.png)
+### 2. Admin Control Dashboard (`/admin`)
+A passcode-protected management panel featuring a 1-minute Task Scheduler status indicator, SQLite storage telemetry, status filters, and manual ping triggers.
+![Admin Dashboard](docs/screenshots/dashboard_admin_page.png)
 
-### 3. Riwayat Log & Diagnostik Error
-Inspeksi detail setiap pengecekan hingga 100 riwayat terakhir, lengkap dengan kode status HTTP, latensi milidetik (`ms`), dan pesan error jaringan.
-![Riwayat Log Ping](docs/screenshots/input_passcode_page.png)
-
----
-
-## Fitur Utama
-
-* **Pemantauan Multi-Metode (`GET`, `HEAD`, `POST`):** Mendukung pengecekan halaman web publik maupun *endpoint* API/webhook dengan *header* menyerupai browser untuk meminimalkan pemblokiran WAF standar.
-* **Deteksi Error 4 Lapis:**
-  1. *Connection Timeout / Hang* (`cURL error 28`) dengan batas koneksi 5 detik dan total tunggu 10 detik.
-  2. *DNS & Network Unreachable* (domain tidak aktif atau gagal resolusi).
-  3. *HTTP Client & Server Errors* (`4xx` dan `5xx`).
-  4. *Latency Degradation* otomatis menandai layanan sebagai **Slow** jika waktu respons melampaui `2.000 ms`.
-* **Visualisasi Heartbeat 60 Ping:** Menampilkan riwayat 60 pengecekan terakhir dalam bentuk grafik batang interaktif (*hover* untuk melihat waktu, status, dan latensi).
-* **Pemisahan Akses Publik & Admin:** Halaman status publik (`/`) dilindungi *rate limiter*, sedangkan seluruh aksi tulis/hapus di `/admin` dikunci menggunakan `ADMIN_PASSCODE` melalui *header* `X-Admin-Key`.
-* **Auto-Pruning & Telemetry SQLite:** Otomatis menghapus log ping yang berusia lebih dari 14 hari setiap hari agar ukuran database SQLite tetap ringan dan terpantau langsung dari dasbor.
+### 3. Passcode Authentication & Diagnostics
+Protected admin access gate and detailed health check inspection, capturing HTTP status codes, response latency (`ms`), and network error diagnostics.
+![Passcode Authentication Page](docs/screenshots/input_passcode_page.png)
 
 ---
 
-## Batasan Sistem (*Engineering Scope*)
+## Key Features
 
-| Aspek | Cakupan PulseGuard | Di Luar Cakupan (Non-Goals) |
+- **Multi-Method Monitoring (`GET`, `HEAD`, `POST`):** Supports checking public web pages as well as API/webhook endpoints using browser-like HTTP headers to minimize blocks from standard WAF rules.
+- **4-Layer Error Detection:**
+  1. *Connection Timeout / Hang* (`cURL error 28`) with a 5-second connection timeout and a 10-second total request timeout.
+  2. *DNS & Network Unreachable* (inactive domains or DNS resolution failures).
+  3. *HTTP Client & Server Errors* (`4xx` and `5xx` status codes).
+  4. *Latency Degradation* automatically flags services as **Slow** when response time exceeds `2,000 ms`.
+- **60-Ping Heartbeat Visualization:** Displays the last 60 health checks as an interactive bar chart (hover to inspect timestamp, status, and latency).
+- **Public & Admin Access Separation:** The public status page (`/`) is protected by rate limiting, while all write/delete actions under `/admin` are locked behind `ADMIN_PASSCODE` via the `X-Admin-Key` header.
+- **Auto-Pruning & SQLite Telemetry:** Automatically prunes ping logs older than 14 days on a daily schedule to keep the SQLite database lightweight, with live storage metrics visible directly on the dashboard.
+
+---
+
+## Engineering Scope
+
+| Aspect | PulseGuard Scope | Out of Scope (Non-Goals) |
 | :--- | :--- | :--- |
-| **Metode Pengecekan** | *Black-box* HTTP/HTTPS request (`GET`, `HEAD`, `POST`) | Eksekusi JavaScript (*headless browser* / Playwright) |
-| **Metrik Server** | Kode status HTTP, latensi jaringan (`ms`), & pesan error cURL | Penggunaan CPU, RAM, atau disk internal server target |
-| **Penyimpanan** | SQLite lokal dengan retensi otomatis 14 hari | *Time-series database* terdistribusi skala besar |
+| **Check Method** | *Black-box* HTTP/HTTPS requests (`GET`, `HEAD`, `POST`) | JavaScript execution (*headless browser* / Playwright) |
+| **Server Metrics** | HTTP status codes, network latency (`ms`), & cURL error messages | Target server internal CPU, RAM, or disk usage |
+| **Storage** | Local SQLite database with automatic 14-day log retention | Large-scale distributed *time-series databases* |
 
 ---
 
 ## Tech Stack
 
-* **Backend:** PHP 8.4+, Laravel Framework, Laravel Task Scheduler
-* **Frontend:** Vue 3 (Composition API), Tailwind CSS, Vite, Lucide Icons
-* **Database:** SQLite
+- **Backend:** PHP 8.4+, Laravel Framework, Laravel Task Scheduler
+- **Frontend:** Vue 3 (Composition API), Tailwind CSS, Vite, Lucide Icons
+- **Database:** SQLite
 
 ---
 
-## Instalasi & Menjalankan di Lokal
+## Installation & Local Setup
 
-1. **Clone repositori dan masuk ke folder proyek:**
+1. **Clone the repository and navigate into the project directory:**
    ```bash
-   git clone [https://github.com/USERNAME_KAMU/pulseguard.git](https://github.com/dbbyaulia-arch/pulseguard)
+   git clone [https://github.com/dbbyaulia-arch/pulseguard.git](https://github.com/dbbyaulia-arch/pulseguard.git)
    cd pulseguard
